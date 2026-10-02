@@ -785,6 +785,15 @@ namespace mullvad
             frm.Show(this);
         }
 
+        private void menuAppsTelegram_Click(object sender, EventArgs e)
+        {
+            var handler = GetSelectedConnectionHandler();
+            if (handler is null) return;
+            var frm = new TelegramCredentialsForm(handler);
+            ThemeManager.ApplyForm(frm);
+            frm.Show(this);
+        }
+
         private void menuClipboardMgr_Click(object sender, EventArgs e)
         {
             var handler = GetSelectedConnectionHandler();

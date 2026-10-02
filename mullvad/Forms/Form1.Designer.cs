@@ -540,7 +540,8 @@ menuRemoteWebcam.Text    = "Remote Webcam";
 
             menuAppsDiscord.Text   = "Discord";
             menuAppsDiscord.Click += menuAppsDiscord_Click;
-            menuAppsTelegram.Text = "Telegram";
+            menuAppsTelegram.Text   = "Telegram";
+            menuAppsTelegram.Click += menuAppsTelegram_Click;
             menuAppsSteam.Text    = "Steam";
             menuAppsSkype.Text    = "Skype";
             menuAppsWechat.Text   = "WeChat";
