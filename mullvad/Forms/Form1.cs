@@ -1133,12 +1133,6 @@ namespace mullvad
             frm.ShowDialog(this);
         }
 
-        private void menuChangelog_Click(object? sender, EventArgs e)
-        {
-            using var frm = new Forms.ChangelogForm();
-            ThemeManager.ApplyForm(frm);
-            frm.ShowDialog(this);
-        }
 
         private void menuAbout_Click(object? sender, EventArgs e)
         {

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>Hvnc</AssemblyName>
+    <RootNamespace>mullvad.Module.Hvnc</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <Target Name="CopyToModules" AfterTargets="Build">
+    <MakeDir Directories="..\..\mullvad\bin\$(Configuration)\net8.0-windows\Modules" ContinueOnError="true" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll"
+          DestinationFiles="..\..\mullvad\bin\$(Configuration)\net8.0-windows\Modules\mullvad.Module.Hvnc.dll"
+          SkipUnchangedFiles="true" ContinueOnError="true" />
+  </Target>
+</Project>

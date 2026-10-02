@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>FileManager</AssemblyName>
+    <RootNamespace>mullvad.Module.FileManager</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <!-- Exclude the old stub -->
+  <ItemGroup>
+    <Compile Remove="Class1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Management" />
+  </ItemGroup>
+
+  <!-- After build: copy to the server's Modules hidden folder -->
+  <Target Name="CopyToModules" AfterTargets="Build">
+    <MakeDir
+      Directories="..\..\mullvad\bin\$(Configuration)\net8.0-windows\Modules"
+      ContinueOnError="true" />
+    <Copy
+      SourceFiles="$(OutputPath)$(AssemblyName).dll"
+      DestinationFiles="..\..\mullvad\bin\$(Configuration)\net8.0-windows\Modules\mullvad.Module.FileManager.dll"
+      SkipUnchangedFiles="true"
+      ContinueOnError="true" />
+  </Target>
+
+</Project>

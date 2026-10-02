@@ -245,12 +245,10 @@ menuRemoteWebcam        = new ToolStripMenuItem();
                 menuVpsHost, menuVpsConnect, menuVpsSep, menuVpsStop,
             });
 
-            menuChangelog = new ToolStripMenuItem { Text = "Changelog", Alignment = ToolStripItemAlignment.Right };
-            menuChangelog.Click += menuChangelog_Click;
             menuAbout = new ToolStripMenuItem { Text = "About", Alignment = ToolStripItemAlignment.Right };
             menuAbout.Click += menuAbout_Click;
 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { menuFile, menuEdit, menuView, menuTools, menuHelp, menuBuilder, menuVps, menuChangelog, menuAbout });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { menuFile, menuEdit, menuView, menuTools, menuHelp, menuBuilder, menuVps, menuAbout });
             menuStrip1.Dock = DockStyle.Top;
 
             // ---- ToolStrip ----
@@ -941,7 +939,7 @@ menuRemoteWebcam.Text    = "Remote Webcam";
         private ToolStripMenuItem        menuBuilder;
         private ToolStripMenuItem        menuBuilderBuild;
         private ToolStripMenuItem        menuBuilderOpenOutput;
-        private ToolStripMenuItem        menuChangelog;
+
         private ToolStripMenuItem        menuAbout;
 
         private SplitContainer       splitContainerMain;

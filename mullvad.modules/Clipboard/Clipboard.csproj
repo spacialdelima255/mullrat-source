@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>Clipboard</AssemblyName>
+    <RootNamespace>mullvad.Module.Clipboard</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <Target Name="CopyToModules" AfterTargets="Build">
+    <MakeDir Directories="..\..\mullvad\bin\$(Configuration)\net8.0-windows\Modules" ContinueOnError="true" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll"
+          DestinationFiles="..\..\mullvad\bin\$(Configuration)\net8.0-windows\Modules\mullvad.Module.Clipboard.dll"
+          SkipUnchangedFiles="true" ContinueOnError="true" />
+  </Target>
+
+</Project>
