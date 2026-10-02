@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>mullvad</AssemblyName>
+    <ApplicationIcon>Resources\icons\mullvad-vpn.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\mullvad.Shared\mullvad.shared.csproj" />
+  </ItemGroup>
+
+  <!-- Exclude local Protocol copies � now in xvcx.Shared -->
+  <ItemGroup>
+    <Compile Remove="Protocol\PacketType.cs" />
+    <Compile Remove="Protocol\Packet.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Mono.Cecil" Version="0.11.6" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2739.15" />
+    <!--<PackageReference Include="Cryptlex.LexActivator" Version="3.*" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\icons\**\*.png" />
+    <EmbeddedResource Include="Resources\icons\**\*.ico" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>GeoLocation</AssemblyName>
+    <RootNamespace>mullvad.Module.GeoLocation</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>latest</LangVersion>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <Target Name="CopyToModules" AfterTargets="Build">
+    <MakeDir Directories="..\mullvad\bin\$(Configuration)\net8.0-windows\Modules" ContinueOnError="true" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll"
+          DestinationFiles="..\mullvad\bin\$(Configuration)\net8.0-windows\Modules\mullvad.Module.GeoLocation.dll"
+          SkipUnchangedFiles="true" ContinueOnError="true" />
+  </Target>
+
+</Project>

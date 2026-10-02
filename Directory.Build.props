@@ -1,0 +1,21 @@
+<Project>
+
+  <!-- Alpha inherits Release optimizations -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Alpha'">
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <DefineConstants>NDEBUG;ALPHA;$(DefineConstants)</DefineConstants>
+    <OutputPath>$(MSBuildThisFileDirectory)build\Alpha\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+
+  <!-- Build config constant for all configurations -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DefineConstants>BUILD_DEBUG;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DefineConstants>BUILD_RELEASE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+</Project>

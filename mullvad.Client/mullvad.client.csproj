@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <StartupObject>mullvad.Client.Loader</StartupObject>
+    <AssemblyName>mullvad.client</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\mullvad.Shared\mullvad.shared.csproj" />
+  </ItemGroup>
+
+  <!--
+    Embed mullvad.shared.dll and Newtonsoft.Json.dll so the exe is truly self-contained.
+    We filter @(ReferenceCopyLocalPaths) � the set of DLLs resolved by MSBuild that
+    would normally be copied to the output folder � into a temporary item list first,
+    then add those as EmbeddedResource before CoreCompile runs.
+  -->
+  <Target Name="EmbedDependencies"
+          AfterTargets="ResolveAssemblyReferences"
+          BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <!-- Step 1: collect the DLLs we want to embed -->
+      <_EmbedDep Include="@(ReferenceCopyLocalPaths)"
+                 Condition="'%(Filename)' == 'mullvad.shared' Or
+                            '%(Filename)' == 'Newtonsoft.Json'" />
+      <!-- Step 2: register them as embedded resources -->
+      <EmbeddedResource Include="@(_EmbedDep)">
+        <LogicalName>%(Filename)%(Extension)</LogicalName>
+        <Visible>false</Visible>
+      </EmbeddedResource>
+    </ItemGroup>
+    <Message Text="[EmbedDependencies] Embedding: @(_EmbedDep)" Importance="High" />
+  </Target>
+
+  <!-- Copy the built exe as client.bin for the server's builder to patch -->
+  <Target Name="CopyClientBin" AfterTargets="Build">
+    <Copy SourceFiles="$(OutputPath)mullvad.client.exe"
+          DestinationFiles="..\mullvad\bin\$(Configuration)\net8.0-windows\client.bin"
+          SkipUnchangedFiles="true"
+          ContinueOnError="true" />
+  </Target>
+
+</Project>

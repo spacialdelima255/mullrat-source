@@ -1,0 +1,72 @@
+# Build output
+bin/
+obj/
+out/
+build/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.assets.json
+.nuget/
+
+# Compiled output
+*.dll
+*.exe
+*.pdb
+*.mdb
+*.ilk
+*.obj
+*.iobj
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Encrypted modules (runtime-generated, not source)
+Modules/*.enc
+
+# Certificates (auto-generated at runtime)
+*.pfx
+*.cer
+*.p12
+
+# Publish profiles
+PublishProfiles/
+**/Properties/PublishProfiles/
+
+# Crash dumps / test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
